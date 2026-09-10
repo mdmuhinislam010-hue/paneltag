@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title id="site-title">MDR PANEL</title>
+    <link id="site-favicon" rel="icon" href="https://placehold.co/140x44/1a1a2e/8b5cf6?text=IASAN" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&family=Noto+Serif+Bengali:wght@400;600;700&display=swap" rel="stylesheet" />
@@ -1123,7 +1124,7 @@
                                     </div>
                                 </div>
                                 <div class="flex gap-2"><span class="text-purple-300">•</span><p>পরিমাণ: <span id="pay-amount-text" class="font-bold text-amber-300">100</span> ৳</p></div>
-                                <div class="flex gap-2"><span class="text-purple-300">•</span><p>পিন দিয়ে নিশ্চিত করুন</p></div>
+                                <div class="flex gap-2"><span class="text-purple-300">•</span><p>পিন দিয়ে নিশ্চিত করুন</p></div>
                                 <div class="flex gap-2"><span class="text-purple-300">•</span><p>Transaction ID দিন এবং <b class="text-purple-300">VERIFY</b> ক্লিক করুন</p></div>
                             </div>
                         </div>
@@ -1336,18 +1337,34 @@
         // ─── APP SETTINGS ───
         function loadAppSettings() {
             db.collection("appSettings").doc("site").onSnapshot((doc) => {
+                const defaultLogo = "https://placehold.co/140x44/1a1a2e/8b5cf6?text=IASAN";
+                const defaultName = "PANEL";
+                let name = defaultName;
+                let logo = defaultLogo;
+                let favicon = defaultLogo;
+
                 if (doc.exists) {
                     const data = doc.data();
-                    const name = data.name || "PANEL";
-                    const logo = data.logo || "https://placehold.co/140x44/1a1a2e/8b5cf6?text=IASAN";
-                    document.getElementById('header-logo-img').src = logo;
-                    document.getElementById('about-logo-img').src = logo;
-                    document.getElementById('about-site-name').innerText = name;
-                    document.title = name;
-                    document.getElementById('site-title').innerText = name;
-                    document.getElementById('step2-logo').src = logo;
-                    document.getElementById('step2-center-logo').src = logo;
-                    document.getElementById('pay-site-logo-small').src = logo;
+                    name = data.name || defaultName;
+                    logo = data.logo || defaultLogo;
+                    // Favicon: use provided favicon, else fallback to logo, else default
+                    favicon = data.favicon || logo;
+                }
+
+                // Update all logo elements
+                document.getElementById('header-logo-img').src = logo;
+                document.getElementById('about-logo-img').src = logo;
+                document.getElementById('about-site-name').innerText = name;
+                document.title = name;
+                document.getElementById('site-title').innerText = name;
+                document.getElementById('step2-logo').src = logo;
+                document.getElementById('step2-center-logo').src = logo;
+                document.getElementById('pay-site-logo-small').src = logo;
+
+                // Update favicon dynamically
+                const faviconEl = document.getElementById('site-favicon');
+                if (faviconEl) {
+                    faviconEl.href = favicon;
                 }
             });
         }
@@ -2370,6 +2387,7 @@
         loadBanners();
 
         console.log('✅ IAPANEL— Premium Black + Purple UI Loaded');
+        console.log('✅ Website Branding Logo System active (logo, favicon, title)');
         console.log('✅ Transaction ID Verify UI updated with RTDB save');
     </script>
 
